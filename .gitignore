@@ -1,0 +1,8 @@
+*.~*~
+#*#
+.*.swp
+.*.fasl
+*.lx64fsl
+*.abcl
+*.fas
+*.lib
