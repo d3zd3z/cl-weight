@@ -189,11 +189,6 @@ particular plan."
     (setf (slot-value instance 'day) (date-to-dow (event-date first-event)))
     (setf (slot-value instance 'date) (date-to-short (event-date first-event)))))
 
-(defmethod shared-initialize :after ((instance summary-stats)
-				     slots &rest initargs
-				     &key week-stats)
-  (declare (ignore slots initargs)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; The moderate diet plan requires each day to have at least 5 70+
