@@ -118,8 +118,7 @@ given date."
    (name :type string :initarg :name)))
 
 (defmethod event-calories ((event eat-event))
-  (* (slot-value event 'calories)
-     (event-count event)))
+  (slot-value event 'calories))
 (defmethod event-calories ((event exercise-event))
   (* (- (slot-value event 'calories))
      (event-count event)))
