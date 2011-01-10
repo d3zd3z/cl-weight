@@ -54,7 +54,7 @@ given plan?"))
 
 (defparameter *total-columns*
   `((total-cals ,#'rounded-printer)
-    (net-calories ,#'rounded-printer)
+    (net-cals ,#'rounded-printer)
     (daily-weight ,(decimal-printer 2))
     (total-weight ,(decimal-printer 2))
     (box ,#'checkbox-printer)
@@ -75,12 +75,15 @@ given plan?"))
 	      (collect `(,slot :initform 0.0)))
 	,@other-slots)))
 
-(define-stat-class daily-stats
+(define-stat-class base-stats
     ((journal :type journal :initarg :journal)
      (events :type list :initarg :events)
      (day :type (or null string))
      (date :type (or null string))
      (:P :initform 0.0)))
+
+(defclass daily-stats (base-stats) ())
+(defclass summary-stats (base-stats) ())
 
 (defun daily-numbers (stats)
   "Given a DAILY-STATS, extract all of the columns appropriately
@@ -101,7 +104,7 @@ appropriately.  Weights are not computed here."
 	(count (event-count event))
 	(calories (event-calories event)))
     (incf (slot-value stats kind) count)
-    (incf (slot-value stats 'net-calories) calories)
+    (incf (slot-value stats 'net-cals) calories)
     (unless (eq kind :PA)
       (incf (slot-value stats 'total-cals) calories))))
 
@@ -111,7 +114,7 @@ appropriately.  Weights are not computed here."
 	  (update-status stats event))
 	events)
   (setf (slot-value stats 'daily-weight)
-	(/ (- (slot-value stats 'net-calories)
+	(/ (- (slot-value stats 'net-cals)
 	      (* 13.0 (journal-weight journal)))
 	   500))
   (values))
@@ -146,10 +149,33 @@ particular plan."
 	  (set-plan-columns journal stats events))
     statses))
 
+(defun compute-summary (week-stats)
+  (let ((summary (make-instance 'summary-stats)))
+    (setf (slot-value summary 'day) "")
+    (setf (slot-value summary 'date) "")
+    ;; TODO: This is kind of hacky.
+    (iter (for day in week-stats)
+	  (counting (slot-value day 'mins) into mins-count)
+	  (counting (slot-value day 'box) into box-count)
+	  (iter (for slot in '(:S :C :E :B :F :V :PA total-cals net-cals))
+		(incf (slot-value summary slot)
+		      (slot-value day slot)))
+	  (let ((weight (slot-value day 'total-weight)))
+	    (iter (for slot in '(daily-weight total-weight))
+		  (setf (slot-value summary slot) weight)))
+	  (finally
+	   (return (let ((numbers (subseq (daily-numbers summary) 0 13))
+			 (day-count (length week-stats)))
+		     `(,@numbers
+		       ,(format nil "~a/~a" box-count day-count)
+		       ,(format nil "~a/~a" mins-count day-count))))))))
+
 (defun compute-weekly (journal)
   "Returns the information on the weekly status chart."
-  (values (daily-column-names)
-	  (mapcar #'daily-numbers (compute-stats journal))))
+  (let ((week-stats (compute-stats journal)))
+    (values (daily-column-names)
+	    (mapcar #'daily-numbers week-stats)
+	    (compute-summary week-stats))))
 
 (defmethod shared-initialize :after ((instance daily-stats)
 				     slots &rest initargs
@@ -162,6 +188,11 @@ particular plan."
     (summarize-day instance journal events)
     (setf (slot-value instance 'day) (date-to-dow (event-date first-event)))
     (setf (slot-value instance 'date) (date-to-short (event-date first-event)))))
+
+(defmethod shared-initialize :after ((instance summary-stats)
+				     slots &rest initargs
+				     &key week-stats)
+  (declare (ignore slots initargs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

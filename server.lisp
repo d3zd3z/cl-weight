@@ -87,13 +87,18 @@
 
 (defun make-weekly (week)
   (let ((journal (load-journal week)))
-    (multiple-value-bind (heading body-rows)
+    (multiple-value-bind (heading body-rows summary)
 	(compute-weekly journal)
       (flet ((output-heading (out)
 	       (with-html-output (out out)
 		 (:tr
 		  (iter (for head in heading)
-			(htm (:th (esc head))))))))
+			(htm (:th (esc head)))))))
+	     (output-row (out row)
+	       (with-html-output (out out)
+		 (:tr
+		  (iter (for col in row)
+			(htm (:td (esc col))))))))
 	(html-template out "Weekly summary"
 	  (:h1 "Weekly summary sheet")
 	  ;; TODO: Use last date, not first.
@@ -102,11 +107,9 @@
 	   (:tbody
 	    (output-heading out)
 	    (iter (for row in body-rows)
-		  (htm (:tr
-			(iter (for col in row)
-			      (htm (:td (esc col)))))))
-	    (output-heading out))))))))
-
+		  (output-row out row))
+	    (output-heading out)
+	    (output-row out summary))))))))
 
 (defun weekly ()
   (ppcre:register-groups-bind (url)
