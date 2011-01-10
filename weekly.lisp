@@ -53,7 +53,7 @@ given plan?"))
   columns.")
 
 (defparameter *total-columns*
-  `((total-calories ,#'rounded-printer)
+  `((total-cals ,#'rounded-printer)
     (net-calories ,#'rounded-printer)
     (daily-weight ,(decimal-printer 2))
     (total-weight ,(decimal-printer 2))
@@ -103,7 +103,7 @@ appropriately.  Weights are not computed here."
     (incf (slot-value stats kind) count)
     (incf (slot-value stats 'net-calories) calories)
     (unless (eq kind :PA)
-      (incf (slot-value stats 'total-calories) calories))))
+      (incf (slot-value stats 'total-cals) calories))))
 
 (defun summarize-day (stats journal events)
   "Summarize the events for a single day."
