@@ -15,6 +15,16 @@ daily minimum requrements for the given plan."))
   (:documentation "Do all of the given events fit in the box for the
 given plan?"))
 
+;;; If there is no plan specified, these are always false.
+;;; TODO: Probably best to assume this is maintenance.
+(defmethod meets-minimums ((plans t) events)
+  (declare (ignore events))
+  nil)
+
+(defmethod in-box ((plans t) events)
+  (declare (ignore events))
+  nil)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun rounded-printer (number)
@@ -29,7 +39,7 @@ given plan?"))
 
 (defun checkbox-printer (bool)
   ;; TODO: Use something better for a webpage.
-  (if bool "X" " "))
+  (if bool (make-string 1 :initial-element (code-char #x2714)) " "))
 
 (defparameter *summary-columns*
   `((:S ,#'rounded-printer)
@@ -69,7 +79,8 @@ given plan?"))
     ((journal :type journal :initarg :journal)
      (events :type list :initarg :events)
      (day :type (or null string))
-     (date :type (or null string))))
+     (date :type (or null string))
+     (:P :initform 0.0)))
 
 (defun daily-numbers (stats)
   "Given a DAILY-STATS, extract all of the columns appropriately
@@ -79,7 +90,7 @@ printable."
 
 (defun daily-column-names ()
   "Return the names of the columns for the daily status."
-  (iter (for (slot) in (append *summary-columns* *total-columns*))
+  (iter (for (slot) in *all-columns*)
 	(collect (string-capitalize (symbol-name slot)))))
 
 (defun update-status (stats event)
@@ -174,6 +185,8 @@ particular plan."
 
 (defmethod meets-minimums ((plan (eql :moderate)) events)
   (iter (for event in events)
+	;; TODO: Use the count.  Although shakes and entrees always
+	;; have a count of 1, other things will have other counts.
 	(counting (moderate-shake-p event) into shakes)
 	(counting (moderate-entree-p event) into entrees)
 	(finally (return (and (>= shakes 5) (>= entrees 2))))))

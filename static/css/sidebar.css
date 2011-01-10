@@ -1,0 +1,52 @@
+.sidebar ul {
+	margin:0;
+	padding:0;
+	border-bottom:1px solid #ccc;
+}
+	 
+
+.sidebar ul li {
+	margin:0;
+	padding:0;
+	list-style:none;
+	border:1px solid #ccc;
+	border-bottom:none;
+}
+
+.sidebar ul li a {
+	display:block;
+	padding:3px;
+	text-indent:3px;
+	text-decoration:none;
+}
+
+.sidebar ul li span {
+	display:block;
+	padding:3px;
+	text-indent:3px;
+	text-decoration:none;
+}
+
+.sidebar ul li a:hover {
+	background-color: #eee;
+}
+
+table.weekly {
+	border: 1px solid #aaa;
+	border-collapse: collapse;
+}
+table.weekly td, th {
+	border: 1px solid #aaa;
+	padding: 2px;
+}
+table.weekly td {
+	text-align: right;
+}
+table.weekly th {
+	vertical-align: bottom;
+	background: #c3d9ff;
+}
+
+ul.wlog {
+	list-style: none;
+}

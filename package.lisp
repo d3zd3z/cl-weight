@@ -15,7 +15,14 @@
 	   #:journal #:journal-p #:journal-plan #:journal-weight #:journal-weeks))
 
 (defpackage #:webweight.weekly
-  (:use #:cl #:iterate #:webweight.journal))
+  (:use #:cl #:iterate #:webweight.journal)
+  (:export #:all-journal-names
+	   #:load-journal
+	   #:compute-weekly))
+
+(defpackage #:webweight.web
+  (:use #:cl #:iterate #:hunchentoot #:cl-who
+	#:webweight.weekly))
 
 (defpackage #:webweight
   (:use #:cl #:iterate

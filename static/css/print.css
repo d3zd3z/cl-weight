@@ -1,0 +1,10 @@
+/* Cleanup the print styles. */
+
+/* Disable the fancy view of links. */
+a:link:after, a:visited:after {
+	content: ""; }
+
+/* Hide the sidebar when printing. *//
+.sidebar { display: none; }
+.sidebar ul li a { display: none; }
+.sidebar ul li span { display: none; }
