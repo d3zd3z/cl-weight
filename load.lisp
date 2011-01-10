@@ -7,3 +7,5 @@
 (load "package.lisp")
 (load "foods.lisp")
 (load "journal.lisp")
+(load "weekly.lisp")
+(load "server.lisp")
