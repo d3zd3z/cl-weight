@@ -73,6 +73,20 @@ given."
 	     :hour hour
 	     :minute minute))
 
+(defun date-to-dow (date)
+  "Return the the character abbreviation for the day of week for the
+given date."
+  (aref #("Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun")
+	(date-calc:cl-day-of-week (date-year date)
+				  (date-month date)
+				  (date-day date))))
+
+(defun date-to-short (date)
+  "Return a short string for the given date."
+  (format nil "~2,'0d-~2,'0d"
+	  (date-month date)
+	  (date-day date)))
+
 (defclass event ()
   ((date :type date :accessor event-date)
    (kind :type symbol :initarg :kind :accessor event-kind)

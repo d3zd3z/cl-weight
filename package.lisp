@@ -11,6 +11,7 @@
 	   #:event #:eat-event #:exercise-event
 	   #:event-calories #:event-name
 	   #:event-date #:event-kind #:event-count
+	   #:date-to-dow #:date-to-short
 	   #:journal #:journal-p #:journal-plan #:journal-weight #:journal-weeks))
 
 (defpackage #:webweight.weekly
