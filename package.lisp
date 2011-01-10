@@ -8,6 +8,9 @@
   (:use #:cl #:iterate #:webweight.foods)
   (:export #:parse-journal
 	   #:all-journal-names #:load-journal
+	   #:event #:eat-event #:exercise-event
+	   #:event-calories #:event-name
+	   #:event-date #:event-kind #:event-count
 	   #:journal #:journal-p #:journal-plan #:journal-weight #:journal-weeks))
 
 (defpackage #:webweight.weekly

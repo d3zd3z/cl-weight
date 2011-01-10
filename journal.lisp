@@ -74,9 +74,11 @@ given."
 	     :minute minute))
 
 (defclass event ()
-  ((date :type date)
-   (kind :type symbol :initarg :kind)
-   (count :type number :initarg :count)))
+  ((date :type date :accessor event-date)
+   (kind :type symbol :initarg :kind :accessor event-kind)
+   (count :type number :initarg :count :accessor event-count)
+   (name :type (or null string) :initarg :name :accessor event-name
+	 :initform nil)))
 
 (defmethod shared-initialize :after ((instance event) slots
 				     &rest initargs
@@ -102,9 +104,11 @@ given."
    (name :type string :initarg :name)))
 
 (defmethod event-calories ((event eat-event))
-  (slot-value event 'calories))
+  (* (slot-value event 'calories)
+     (event-count event)))
 (defmethod event-calories ((event exercise-event))
-  (- (slot-value event 'calories)))
+  (* (- (slot-value event 'calories))
+     (event-count event)))
 
 (defun set-weight (weight)
   (setf *weight* weight))
@@ -135,8 +139,8 @@ given."
   (push (make-instance 'exercise-event :kind :PA
 		       :hour hour
 		       :minute minute
-		       :calories count
-		       :count 1.0
+		       :calories 1.0
+		       :count count
 		       :name name)
 	*today-list*))
 (define-pattern add-exercise "^\\s+(\\d\\d):(\\d\\d) PA (\\d+) (.*)$"
