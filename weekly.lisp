@@ -166,7 +166,7 @@ particular plan."
 	    (iter (for slot in '(daily-weight total-weight))
 		  (setf (slot-value summary slot) weight)))
 	  (finally
-	   (return (let ((numbers (subseq (daily-numbers summary) 0 13))
+	   (return (let ((numbers (butlast (daily-numbers summary) 2))
 			 (day-count (length week-stats)))
 		     `(,@numbers
 		       ,(format nil "~a/~a" box-count day-count)
