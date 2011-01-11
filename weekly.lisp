@@ -27,21 +27,22 @@ given plan?"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun rounded-printer (number)
-  "Print out number, rounded to an integer."
-  (princ-to-string (round number)))
-
-(defun decimal-printer (digits)
-  "Create a decimal printer of the given number of digits."
-  (let ((format-code (format nil "~~,~AF" digits)))
-    (lambda (number)
-      (format nil format-code number))))
-
-(defun checkbox-printer (bool)
-  ;; TODO: Use something better for a webpage.
-  (if bool (make-string 1 :initial-element (code-char #x2714)) " "))
-
 (eval-when (:compile-toplevel :load-toplevel :execute)
+
+  (defun rounded-printer (number)
+    "Print out number, rounded to an integer."
+    (princ-to-string (round number)))
+
+  (defun decimal-printer (digits)
+    "Create a decimal printer of the given number of digits."
+    (let ((format-code (format nil "~~,~AF" digits)))
+      (lambda (number)
+	(format nil format-code number))))
+
+  (defun checkbox-printer (bool)
+    ;; TODO: Use something better for a webpage.
+    (if bool (make-string 1 :initial-element (code-char #x2714)) " "))
+
 
   (defparameter *summary-columns*
     `((S ,#'rounded-printer)
