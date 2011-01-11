@@ -41,31 +41,33 @@ given plan?"))
   ;; TODO: Use something better for a webpage.
   (if bool (make-string 1 :initial-element (code-char #x2714)) " "))
 
-(defparameter *summary-columns*
-  `((:S ,#'rounded-printer)
-    (:C ,#'rounded-printer)
-    (:E ,#'rounded-printer)
-    (:B ,#'rounded-printer)
-    (:F ,#'rounded-printer)
-    (:V ,#'rounded-printer)
-    (:PA ,#'rounded-printer))
-  "The statistic columns that are based on a summary of other
+(eval-when (:compile-toplevel :load-toplevel :execute)
+
+  (defparameter *summary-columns*
+    `((:S ,#'rounded-printer)
+      (:C ,#'rounded-printer)
+      (:E ,#'rounded-printer)
+      (:B ,#'rounded-printer)
+      (:F ,#'rounded-printer)
+      (:V ,#'rounded-printer)
+      (:PA ,#'rounded-printer))
+    "The statistic columns that are based on a summary of other
   columns.")
 
-(defparameter *total-columns*
-  `((total-cals ,#'rounded-printer)
-    (net-cals ,#'rounded-printer)
-    (daily-weight ,(decimal-printer 2))
-    (total-weight ,(decimal-printer 2))
-    (box ,#'checkbox-printer)
-    (mins ,#'checkbox-printer))
-  "Statistic columns that are computed from other results.")
+  (defparameter *total-columns*
+    `((total-cals ,#'rounded-printer)
+      (net-cals ,#'rounded-printer)
+      (daily-weight ,(decimal-printer 2))
+      (total-weight ,(decimal-printer 2))
+      (box ,#'checkbox-printer)
+      (mins ,#'checkbox-printer))
+    "Statistic columns that are computed from other results.")
 
-(defparameter *all-columns*
-  `((day ,#'identity)
-    (date ,#'identity)
-    ,@*summary-columns*
-    ,@*total-columns*))
+  (defparameter *all-columns*
+    `((day ,#'identity)
+      (date ,#'identity)
+      ,@*summary-columns*
+      ,@*total-columns*)))
 
 (defmacro define-stat-class (name &optional other-slots)
   `(defclass ,name ()
