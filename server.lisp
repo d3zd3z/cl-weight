@@ -10,11 +10,11 @@
 
 (defvar *webweight-acceptor* nil)
 
-(defun start-webweight ()
+(defun start-webweight (&optional (port 4242))
   (when *webweight-acceptor*
     (error "Webweight already started"))
   (setf *webweight-acceptor*
-	(hunchentoot:start (make-instance 'hunchentoot:acceptor :port 4242))))
+	(hunchentoot:start (make-instance 'hunchentoot:acceptor :port port))))
 (defun stop-webweight ()
   (unless *webweight-acceptor*
     (error "Webweight not running"))
