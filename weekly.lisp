@@ -173,24 +173,26 @@ particular plan."
 		       ,(format nil "~a/~a" box-count day-count)
 		       ,(format nil "~a/~a" mins-count day-count))))))))
 
+(defparameter *weekly-cache-lock* (bt:make-lock "weekly-cache-lock"))
 (defparameter *weekly-cache*
   (tg:make-weak-hash-table :test #'eq :weakness :key)
   "Cache the computed values for a given journal entry.")
 
 (defun compute-weekly (journal)
   "Returns the information on the weekly status chart."
-  (let ((cached (gethash journal *weekly-cache*)))
-    (when cached
-      (return-from compute-weekly (values-list cached))))
+  (bt:with-lock-held (*weekly-cache-lock*)
+    (let ((cached (gethash journal *weekly-cache*)))
+      (when cached
+	(return-from compute-weekly (values-list cached))))
 
-  ;; Not in cache, compute it, and cache the result.
-  (let* ((week-stats (compute-stats journal))
-	 (names (daily-column-names))
-	 (numbers (mapcar #'daily-numbers week-stats))
-	 (summary (compute-summary week-stats)))
-    (setf (gethash journal *weekly-cache*)
-	  (list names numbers summary))
-    (values names numbers summary)))
+    ;; Not in cache, compute it, and cache the result.
+    (let* ((week-stats (compute-stats journal))
+	   (names (daily-column-names))
+	   (numbers (mapcar #'daily-numbers week-stats))
+	   (summary (compute-summary week-stats)))
+      (setf (gethash journal *weekly-cache*)
+	    (list names numbers summary))
+      (values names numbers summary))))
 
 (defmethod shared-initialize :after ((instance daily-stats)
 				     slots &rest initargs

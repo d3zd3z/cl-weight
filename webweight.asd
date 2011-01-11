@@ -9,6 +9,7 @@
 	       :parse-number
 	       :cl-who
 	       :trivial-garbage
+	       :bordeaux-threads
 	       :hunchentoot)
   :components ((:file "package")
 	       (:file "symbols")
