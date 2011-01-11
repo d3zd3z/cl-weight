@@ -2,6 +2,12 @@
 
 (in-package #:webweight.web)
 
+;;; Set the XML header in the prolog
+(setf *prologue*
+      "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
+<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">")
+(setf *default-content-type* "text/html; charset=utf-8")
+
 (hunchentoot:start (make-instance 'hunchentoot:acceptor :port 4242))
 
 (hunchentoot:define-easy-handler (say-yo :uri "/yo") (name)
