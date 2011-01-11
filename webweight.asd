@@ -5,7 +5,7 @@
   :version "0.1"
   :depends-on (:cl-ppcre
 	       :csv-parser
-	       :date-calc
+	       :date-calc   ;; WARNING GPLv2
 	       :parse-number
 	       :cl-who
 	       :hunchentoot)

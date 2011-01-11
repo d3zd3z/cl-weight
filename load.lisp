@@ -1,12 +1,4 @@
-(ql:quickload "cl-ppcre")
-(ql:quickload "csv-parser")
-(ql:quickload "date-calc") ;; WARNING: GPLv2
-(ql:quickload "parse-number")
-(ql:quickload "cl-who")
-(ql:quickload "hunchentoot")
-(load "package.lisp")
-(load "symbols.lisp")
-(load "foods.lisp")
-(load "journal.lisp")
-(load "weekly.lisp")
-(load "server.lisp")
+(ql:quickload "webweight")
+
+(format t "Starting webweight~%")
+(webweight:start-webweight)

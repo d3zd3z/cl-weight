@@ -8,20 +8,34 @@
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">")
 (setf *default-content-type* "text/html; charset=utf-8")
 
-(hunchentoot:start (make-instance 'hunchentoot:acceptor :port 4242))
+(defvar *webweight-acceptor* nil)
 
-(hunchentoot:define-easy-handler (say-yo :uri "/yo") (name)
-  (setf (hunchentoot:content-type*) "text/plain")
-  (format nil "Hey~@[ ~A~]!" name))
+(defun start-webweight ()
+  (when *webweight-acceptor*
+    (error "Webweight already started"))
+  (setf *webweight-acceptor*
+	(hunchentoot:start (make-instance 'hunchentoot:acceptor :port 4242))))
+(defun stop-webweight ()
+  (unless *webweight-acceptor*
+    (error "Webweight not running"))
+  (hunchentoot:stop *webweight-acceptor*)
+  (setf *webweight-acceptor* nil))
 
-(push (create-folder-dispatcher-and-handler
-       "/css/"
-       #p"/home/davidb/web/cl-weight/static/css/" "text/css")
-      *dispatch-table*)
-(push (create-folder-dispatcher-and-handler
-       "/images/"
-       #p"/home/davidb/web/cl-weight/static/images/")
-      *dispatch-table*)
+(setf *dispatch-table*
+      (list 'dispatch-easy-handlers
+	    (create-folder-dispatcher-and-handler
+	     "/css/"
+	     #p"/home/davidb/web/cl-weight/static/css/" "text/css")
+	    (create-folder-dispatcher-and-handler
+	     "/images/"
+	     #p"/home/davidb/web/cl-weight/static/images/")
+	    (create-regex-dispatcher "^/wlog/weekly/\\d{4}-\\d\\d-\\d\\d" 'weekly)
+	    (create-prefix-dispatcher "/wlog/weekly" 'current-weekly)
+	    (create-prefix-dispatcher "/wlog" 'wlog)
+	    'default-dispatcher))
+
+(setf *default-handler* 'index)
+
 
 (defun gen-head (out title)
   (flet ((stylesheet (name &optional (media "screen, projection"))
@@ -77,8 +91,6 @@
 	(:a :href "http://blog.davidb.org" "have a blog")
 	". Most of my new information will be there rather than on this site.")))
 
-(setf *default-handler* 'index)
-
 (defun wlog ()
   "Weight log"
   (html-template out "David Brown summary sheets"
@@ -88,8 +100,6 @@
 	    (htm (:li
 		  ((:a :href (format nil "/wlog/weekly/~A" date))
 		      (str date)))))))))
-
-(push (create-prefix-dispatcher "/wlog" 'wlog) *dispatch-table*)
 
 (defun make-weekly (week)
   (let ((journal (load-journal week)))
@@ -125,10 +135,4 @@
 (defun current-weekly ()
   (make-weekly (first (all-journal-names))))
 
-(push (create-prefix-dispatcher "/wlog/weekly" 'current-weekly)
-      *dispatch-table*)
-(push (create-regex-dispatcher "^/wlog/weekly/\\d{4}-\\d\\d-\\d\\d" 'weekly)
-      *dispatch-table*)
-
-;;; TODO: Make the *dispatch-table* defined, rather than pushed to.
 ;;; TODO: Default handler should be for errors, homepage handles it correctly.

@@ -27,10 +27,13 @@
 
 (defpackage #:webweight.web
   (:use #:cl #:iterate #:hunchentoot #:cl-who
-	#:webweight.weekly))
+	#:webweight.weekly)
+  (:export #:start-webweight #:stop-webweight))
 
 (defpackage #:webweight
   (:use #:cl #:iterate
 	#:webweight.journal
-	#:webweight.weekly))
+	#:webweight.weekly
+	#:webweight.web)
+  (:export #:start-webweight #:stop-webweight))
 
