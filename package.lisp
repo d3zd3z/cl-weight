@@ -1,11 +1,16 @@
 ;;; CL-weight package
 
+(defpackage #:webweight.symbols
+  (:use #:cl)
+  (:export #:S #:E #:B #:F #:V #:P #:PA #:C
+	   #:find-food-type))
+
 (defpackage #:webweight.foods
-  (:use #:cl #:csv-parser)
+  (:use #:cl #:csv-parser #:webweight.symbols)
   (:export #:load-foods #:lookup-food))
 
 (defpackage #:webweight.journal
-  (:use #:cl #:iterate #:webweight.foods)
+  (:use #:cl #:iterate #:webweight.symbols #:webweight.foods)
   (:export #:parse-journal
 	   #:all-journal-names #:load-journal
 	   #:event #:eat-event #:exercise-event
@@ -15,7 +20,7 @@
 	   #:journal #:journal-p #:journal-plan #:journal-weight #:journal-weeks))
 
 (defpackage #:webweight.weekly
-  (:use #:cl #:iterate #:webweight.journal)
+  (:use #:cl #:iterate #:webweight.journal #:webweight.symbols)
   (:export #:all-journal-names
 	   #:load-journal
 	   #:compute-weekly))

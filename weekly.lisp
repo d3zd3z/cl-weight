@@ -44,13 +44,13 @@ given plan?"))
 (eval-when (:compile-toplevel :load-toplevel :execute)
 
   (defparameter *summary-columns*
-    `((:S ,#'rounded-printer)
-      (:C ,#'rounded-printer)
-      (:E ,#'rounded-printer)
-      (:B ,#'rounded-printer)
-      (:F ,#'rounded-printer)
-      (:V ,#'rounded-printer)
-      (:PA ,#'rounded-printer))
+    `((S ,#'rounded-printer)
+      (C ,#'rounded-printer)
+      (E ,#'rounded-printer)
+      (B ,#'rounded-printer)
+      (F ,#'rounded-printer)
+      (V ,#'rounded-printer)
+      (PA ,#'rounded-printer))
     "The statistic columns that are based on a summary of other
   columns.")
 
@@ -82,7 +82,7 @@ given plan?"))
      (events :type list :initarg :events)
      (day :type (or null string))
      (date :type (or null string))
-     (:P :initform 0.0)))
+     (P :initform 0.0)))
 
 (defclass daily-stats (base-stats) ())
 (defclass summary-stats (base-stats) ())
@@ -107,7 +107,7 @@ appropriately.  Weights are not computed here."
 	(calories (event-calories event)))
     (incf (slot-value stats kind) count)
     (incf (slot-value stats 'net-cals) calories)
-    (unless (eq kind :PA)
+    (unless (eq kind 'PA)
       (incf (slot-value stats 'total-cals) calories))))
 
 (defun summarize-day (stats journal events)
@@ -159,7 +159,7 @@ particular plan."
     (iter (for day in week-stats)
 	  (counting (slot-value day 'mins) into mins-count)
 	  (counting (slot-value day 'box) into box-count)
-	  (iter (for slot in '(:S :C :E :B :F :V :PA total-cals net-cals))
+	  (iter (for slot in '(S C E B F V PA total-cals net-cals))
 		(incf (slot-value summary slot)
 		      (slot-value day slot)))
 	  (let ((weight (slot-value day 'total-weight)))
@@ -203,12 +203,12 @@ particular plan."
 
 (defun moderate-shake-p (event)
   "Does this event qualify for the shake minimum?"
-  (and (eq (event-kind event) :S)
+  (and (eq (event-kind event) 'S)
        (string= (event-name event) "70+")))
 
 (defun moderate-entree-p (event)
   "Does this event qualify for the entree minimum?"
-  (and (eq (event-kind event) :E)
+  (and (eq (event-kind event) 'E)
        (member (event-name event) *moderate-entrees* :test #'string=)))
 
 (defmethod meets-minimums ((plan (eql :moderate)) events)
@@ -222,4 +222,4 @@ particular plan."
 (defmethod in-box ((plan (eql :moderate)) events)
   (iter (for event in events)
 	(always (member (event-kind event)
-			'(:S :E :B :PA)))))
+			'(S E B PA)))))

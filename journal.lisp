@@ -149,7 +149,7 @@ given date."
   (parse-integer parse-integer parse-integer))
 
 (defun add-exercise (hour minute count name)
-  (push (make-instance 'exercise-event :kind :PA
+  (push (make-instance 'exercise-event :kind 'PA
 		       :hour hour
 		       :minute minute
 		       :calories 1.0
@@ -170,13 +170,13 @@ given date."
 (defun add-uncounted (hour minute kind name)
   (add-counted hour minute kind 1.0 name))
 (define-pattern add-uncounted "^\\s+(\\d\\d):(\\d\\d) (S|E|B) (.*)$"
-  (parse-integer parse-integer make-keyword t))
+  (parse-integer parse-integer find-food-type t))
 
 (define-pattern add-counted "^\\s+(\\d\\d):(\\d\\d) (F|V|P) ([\\d\\.]+) (.*)$"
-  (parse-integer parse-integer make-keyword read-from-string t))
+  (parse-integer parse-integer find-food-type read-from-string t))
 
 (defun add-cereal (hour minute)
-  (add-uncounted hour minute :C "cereal"))
+  (add-uncounted hour minute 'C "cereal"))
 (define-pattern add-cereal "^\\s+(\\d\\d):(\\d\\d) C$"
   (parse-integer parse-integer))
 

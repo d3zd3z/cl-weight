@@ -5,6 +5,7 @@
 (ql:quickload "cl-who")
 (ql:quickload "hunchentoot")
 (load "package.lisp")
+(load "symbols.lisp")
 (load "foods.lisp")
 (load "journal.lisp")
 (load "weekly.lisp")
