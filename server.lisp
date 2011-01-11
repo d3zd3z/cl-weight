@@ -79,7 +79,8 @@
 	     (:ul
 	      (:li (:a :href "/" "Home"))
 	      (:li (:a :href "/wlog" "Overview"))
-	      (:li (:a :href "/wlog/weekly" "Current")))
+	      (:li (:a :href "/wlog/weekly" "Current"))
+	      (:li (:a :href "https://github.com/d3zd3z/cl-weight/" "Source")))
 	     (:hr :class "space"))
 	    ((:div :class "column span-19 last")
 	     ,@body))))))))
