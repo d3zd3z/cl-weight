@@ -11,7 +11,7 @@
 
 (defpackage #:webweight.journal
   (:use #:cl #:iterate #:webweight.symbols #:webweight.foods)
-  (:export #:parse-journal
+  (:export #:parse-journal #:find-journal
 	   #:all-journal-names #:load-journal
 	   #:event #:eat-event #:exercise-event
 	   #:event-calories #:event-name

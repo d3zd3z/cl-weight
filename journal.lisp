@@ -239,9 +239,24 @@ it couldn't be found."
 						  :defaults dir)))
 	(when pathname (return (first pathname)))))
 
+(defstruct cached-journal path date info)
+
+(defparameter *journal-cache* (make-hash-table :test 'equal))
+
 (defun load-journal (name)
   "Load the specified journal."
   (let ((path (find-journal name)))
     (unless path
       (error "Unable to find journal named ~S" name))
-    (parse-journal path)))
+    (let ((cached (gethash path *journal-cache*))
+	  (date (file-write-date path)))
+      (cond ((and cached
+		  (= date (cached-journal-date cached))
+		  (equal path (cached-journal-path cached)))
+	     (cached-journal-info cached))
+	    (t (let ((journal (parse-journal path)))
+		 (setf (gethash path *journal-cache*)
+		       (make-cached-journal :path path
+					    :date date
+					    :info journal))
+		 journal))))))

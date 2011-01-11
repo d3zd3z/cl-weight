@@ -8,6 +8,7 @@
 	       :date-calc   ;; WARNING GPLv2
 	       :parse-number
 	       :cl-who
+	       :trivial-garbage
 	       :hunchentoot)
   :components ((:file "package")
 	       (:file "symbols")

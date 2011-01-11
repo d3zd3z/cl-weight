@@ -78,8 +78,8 @@
 	     (:hr :class "space")
 	     (:ul
 	      (:li (:a :href "/" "Home"))
-	      (:li (:a :href "/wlog" "Webweight"))
-	      (:li (:a :href "/wlog/weekly" "Summary sheet")))
+	      (:li (:a :href "/wlog" "Overview"))
+	      (:li (:a :href "/wlog/weekly" "Current")))
 	     (:hr :class "space"))
 	    ((:div :class "column span-19 last")
 	     ,@body))))))))
@@ -94,12 +94,21 @@
 (defun wlog ()
   "Weight log"
   (html-template out "David Brown summary sheets"
-    ((:div :class "column span-8")
-     ((:ul :class "wlog")
-      (iter (for date in (all-journal-names))
-	    (htm (:li
-		  ((:a :href (format nil "/wlog/weekly/~A" date))
-		      (str date)))))))))
+    ((:div :class "column span-19 last")
+     ((:table :class "weekly")
+      (:tbody
+       (iter (for date in (all-journal-names))
+	     (for (values heading body-rows summary) = (compute-weekly (load-journal date)))
+	     (declare (ignorable body-rows))
+	     (when (first-iteration-p)
+	       (htm (:tr (:th "Date")
+			 (iter (for col in (nthcdr 2 heading))
+			       (htm (:th (esc col)))))))
+	     (htm (:tr
+		   (:td (:a :href (format nil "/wlog/weekly/~A" date)
+			    (str date)))
+		   (iter (for col in (nthcdr 2 summary))
+			 (htm (:td (esc col))))))))))))
 
 (defun make-weekly (week)
   (let ((journal (load-journal week)))
